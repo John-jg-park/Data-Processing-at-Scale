@@ -1,0 +1,59 @@
+Spark installation on Linux (Ubuntu)
+
+Pre-installation requirements - 
+
+1. Install Ubuntu (or Linux/UNIX distro of your choice) in a virtual machine player
+2. Ensure that there is sufficient space to work
+3. Ensure you have a text editor like vi, vim, emacs or nano installed to edit the bashrc file with sudo permissions
+4. Ensure you have curl installed to install sbt
+
+Installation of Spark (Ubuntu 20.04 LTS used with Scala for programming language)
+
+1. Check if you have Java installed.
+	- The version we will use requires Java 8, so please make sure you install that
+	- If you already have Java JDK installed (check with java --version), then proceed to step 2.
+	- If you do not have Java JDK installed, then install with the following command 
+		=> sudo apt install openjdk-8-jdk openjdk-8-jre
+		=> Check which version was installed using java --version
+
+2. Check if scala is installed in your system using the command 
+	=> scala -version
+		- If you see a version number, proceed to step 3
+		- If you don't see a version number, install scala using the following command 
+			=> sudo apt install scala
+		- Verify version number post install
+
+3. Download Spark package from the official Spark website
+	- Here we use Spark version 2.4.7 which is pre-built for Apache Hadoop 2.7 (Note that if you use Spark 3.x then you need Java 11 to be installed)
+	- Choose the mirror site closest to you
+	- After the download is completed, navigate to the location of your download & extract the .tgz using the following command 
+		=> tar xvf spark-2.4.7-bin-hadoop2.7.tgz
+	- Move the spark folder to /usr/local/spark using the following commands
+		=> sudo mv spark-2.4.7-bin-hadoop2.7 /usr/local/spark
+
+4. Setup the environment for Spark:
+	-Add the following line to ~/.bashrc file (use a text editor of your choice, here I use VIM)
+		=> export PATH=$PATH:/usr/local/spark/bin
+	- Source the /.bashrc file using the following command
+		=> source ~/.bashrc
+	- Verify if the spark environment starts up
+		=> spark-shell
+	- If everything installed correctly, then you can see the scala prompt waiting for you to enter a command
+	- Alternatively, you can also check the web UI by accessing 127.0.0.1:4040 (uses loopback address by default)
+
+5. Install sbt 
+	- Use the following resource to install sbt for Ubuntu 
+		-https://www.scala-sbt.org/release/docs/Installing-sbt-on-Linux.html
+	- The following 4 commands must be executed to install sbt (taken from the site linked)
+		=> echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+		=> curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo apt-key add
+		=> sudo apt-get update
+		=> sudo apt-get install sbt
+	- Once you have followed the steps here you should have a working sbt install
+
+6. Once you are done editing the file, we need to compile and run the .scala files using spark
+	- Go to project root folder,
+		=>Run sbt clean assembly. 
+		=>Find the packaged jar in "./target/scala-2.11/CSE511-Project-Hotspot-Analysis-Template-assembly-0.1.0.jar"
+		=>Submit the jar to Spark using Spark command "./bin/spark-submit". 
+		=>A pseudo code example: ./bin/spark-submit ~/GitHub/CSE511-Project-Hotspot-Analysis-Template/target/scala-2.11/CSE511-Project-Hotspot-		Analysis-Template-assembly-0.1.0.jar test/output hotzoneanalysis src/resources/point-hotzone.csv src/resources/zone-hotzone.csv 		hotcellanalysis src/resources/yellow_tripdata_2009-01_point.csv
